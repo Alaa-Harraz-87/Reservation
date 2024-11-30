@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Reservation.Core.Entities;
+using Reservation.Core.Entities.Views;
 using Reservation.Core.Interfaces;
 
 namespace Reservation.InfraStructure
@@ -16,6 +17,7 @@ namespace Reservation.InfraStructure
         public DbSet<Reservation.Core.Entities.Ticket> Tickets { get; set; }
         public DbSet<Reservation.Core.Entities.Bus> Buses { get; set; }
 
+        public DbSet<V_UserAnalytics> V_UserAnalytics { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -67,6 +69,19 @@ namespace Reservation.InfraStructure
                       .WithOne(t => t.Reservation)
                       .HasForeignKey(t => t.ReservationId);
 
+            });
+
+            // Configure the view
+            modelBuilder.Entity<V_UserAnalytics>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("V_UserAnalytics"); 
+
+                entity.Property(e => e.UserEmail).HasColumnName("UserEmail");
+                entity.Property(e => e.Pickup).HasColumnName("Pickup");
+                entity.Property(e => e.Destination).HasColumnName("Destination");
+                entity.Property(e => e.DaysBetweenTrips).HasColumnName("DaysBetweenTrips");
             });
 
 
