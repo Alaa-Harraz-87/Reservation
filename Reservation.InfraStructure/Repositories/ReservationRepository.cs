@@ -52,7 +52,7 @@ namespace Reservation.InfraStructure.Repositories
 
         public async Task<TripRoute> GetTripRouteByIdAsync(int id)
         {
-            return await _context.TripRoutes.Where(t => t.Id == id).FirstAsync();
+            return await _context.TripRoutes.FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<List<FrequentTripResponse>> GetFrequentTripByUserAsync()

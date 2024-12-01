@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Reservation.Core.Interfaces;
 using Reservation.Core.Services.Impelmentation;
 using Reservation.Core.Services.Interfaces;
@@ -6,6 +7,8 @@ using Reservation.InfraStructure;
 using Reservation.InfraStructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 
@@ -15,14 +18,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IReservationService, ReservationService>();
-builder.Services.AddScoped<IReservationContext, ReservationContext>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 
 
+//builder.Services.AddDbContext<ReservationContext>(options =>
+//{
+//    options.UseInMemoryDatabase("ReservationDB");
+//});
+
+
 builder.Services.AddDbContext<ReservationContext>(options =>
-{
-    options.UseInMemoryDatabase("ReservationDB");
-});
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -31,7 +37,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ReservationContext>();
-    context.Database.EnsureCreated();
+    if (app.Environment.IsDevelopment())
+    {
+        context.Database.Migrate();
+    }
 }
 
 // Configure the HTTP request pipeline.

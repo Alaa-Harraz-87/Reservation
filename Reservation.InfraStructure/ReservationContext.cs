@@ -5,7 +5,7 @@ using Reservation.Core.Interfaces;
 
 namespace Reservation.InfraStructure
 {
-    public class ReservationContext : DbContext , IReservationContext
+    public class ReservationContext : DbContext 
     {
         public ReservationContext(DbContextOptions<ReservationContext> options) : base(options) { }
 
